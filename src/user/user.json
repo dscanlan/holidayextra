@@ -1,7 +1,16 @@
-{
-  "id": "12345",
-  "givenName": "dominic",
-  "familyName": "scanlan",
-  "email": "d@d.com",
-  "created": "2020-09-14T11:00:00.000Z"
-}
+[
+  {
+    "id": "12345",
+    "givenName": "dominic",
+    "familyName": "scanlan",
+    "email": "d@d.com",
+    "created": "2020-09-14T11:00:00.000Z"
+  },
+  {
+    "id": "678910",
+    "givenName": "frank",
+    "familyName": "smith",
+    "email": "f@s.com",
+    "created": "2020-09-14T12:00:00.000Z"
+  }
+]

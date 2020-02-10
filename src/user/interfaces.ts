@@ -15,8 +15,17 @@ export interface findUserRequest {
   id: string;
 }
 
+interface user {
+  id: string;
+  givenName: string;
+  familyName: string;
+  email: string;
+  created: Date;
+}
+
 export interface userResponse {
-  user?: object;
+  user?: user;
+  users?: user[];
   success?: boolean;
   error?: string;
 }

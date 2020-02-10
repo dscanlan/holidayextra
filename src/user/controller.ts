@@ -65,6 +65,28 @@ class Controller {
     email
   });
 
+  public async findAllUsers(): Promise<userResponse> {
+    try {
+      const users = await this.Model.find(
+        {},
+        {
+          _id: 0,
+          id: 1,
+          givenName: 1,
+          familyName: 1,
+          email: 1,
+          created: 1
+        }
+      ).exec();
+
+      return { users: users.map(u => this.readDocument(u)) };
+    } catch (e) {
+      return {
+        error: e.message
+      };
+    }
+  }
+
   public async findUser({ id }: findUserRequest): Promise<userResponse> {
     try {
       const found = await this.Model.findOne({ id });

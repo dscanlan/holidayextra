@@ -17,12 +17,12 @@ class Routes {
             givenName
           });
           if (error) {
-            return res.status(500).send(error);
+            return res.status(400).send(error);
           }
           return res.send({ user });
         } catch (e) {
           console.log(e);
-          return res.status(500).send(e);
+          return res.status(400).send(e);
         }
       }
     );
@@ -37,11 +37,28 @@ class Routes {
             id: userId
           });
           if (error) {
-            return res.status(500).send(error);
+            return res.status(404).send(error);
           }
           return res.send({ user });
         } catch (e) {
-          return res.status(500).send(e);
+          return res.status(404).send(e);
+        }
+      }
+    );
+    app.get(
+      "/users",
+      async (req: Request, res: Response): Promise<any> => {
+        try {
+          const {
+            params: { userId }
+          } = req;
+          const { users, error } = await controller.findAllUsers();
+          if (error) {
+            return res.status(400).send(error);
+          }
+          return res.send({ users });
+        } catch (e) {
+          return res.status(400).send(e);
         }
       }
     );
@@ -62,11 +79,11 @@ class Routes {
           });
 
           if (error) {
-            return res.status(500).send(error);
+            return res.status(400).send(error);
           }
           return res.send({ user });
         } catch (e) {
-          return res.status(500).send(e);
+          return res.status(400).send(e);
         }
       }
     );
@@ -81,11 +98,11 @@ class Routes {
           });
 
           if (!success) {
-            return res.status(500).send(error);
+            return res.status(400).send(error);
           }
           return res.send(success);
         } catch (e) {
-          return res.status(500).send(e);
+          return res.status(400).send(e);
         }
       }
     );

@@ -1,5 +1,7 @@
 import express from "express";
 import * as bodyParser from "body-parser";
+import SwaggerUi from "swagger-ui-express";
+import SwaggerDoc from "./swagger.json";
 
 class App {
   private static _instance: express.Application;
@@ -15,6 +17,8 @@ class App {
       const router = express.Router();
       app.use("/", router);
       app.get("/", (req, res) => res.send("hello"));
+
+      app.use("/swagger", SwaggerUi.serve, SwaggerUi.setup(SwaggerDoc));
 
       this._instance = app;
     }

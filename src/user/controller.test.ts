@@ -1,12 +1,8 @@
 const mongoose = require("mongoose");
-import * as mockUser from "./user.json";
+import dbData from "./user.json";
 import controller from "./controller";
 
-jest.mock("uuid/v4", () => {
-  return {
-    default: () => "7d141f2d-6a90-4ea7-bcaa-0ba2009e052b"
-  };
-});
+jest.mock("uuid/v4", () => () => "7d141f2d-6a90-4ea7-bcaa-0ba2009e052b");
 
 let connection;
 let db;
@@ -14,7 +10,7 @@ let db;
 describe("User.Controller", () => {
   beforeAll(async () => {
     connection = await mongoose.connect(
-      "mongodb://mongo:27017/holiday",
+      process.env.MONGO_URL,
       { useNewUrlParser: true, useCreateIndex: true },
       err => {
         if (err) {
@@ -27,13 +23,40 @@ describe("User.Controller", () => {
   });
   beforeEach(async () => {
     await db.collection("users").deleteMany({});
-    await db.collection("users").insertOne({ ...mockUser });
+    await db.collection("users").insert(dbData);
   });
   describe("findUser", () => {
     it("should return a known user", async () => {
       const ret = await controller.findUser({ id: "12345" });
+      const testUser = { ...dbData[0] };
       expect(ret).toEqual({
-        user: { ...mockUser, created: new Date(mockUser.created) }
+        user: {
+          id: testUser.id,
+          givenName: testUser.givenName,
+          familyName: testUser.familyName,
+          email: testUser.email,
+          created: new Date(testUser.created)
+        }
+      });
+    });
+    it("should return an error and null value", async () => {
+      const ret = await controller.findUser({ id: "abcde" });
+      expect(ret).toEqual({ error: "User not found" });
+    });
+  });
+  describe("findAllUsers", () => {
+    it("should return list of users", async () => {
+      const ret = await controller.findAllUsers();
+      const test = dbData.map(i => ({
+        id: i.id,
+        givenName: i.givenName,
+        familyName: i.familyName,
+        email: i.email,
+        created: new Date(i.created)
+      }));
+
+      expect(ret).toEqual({
+        users: test
       });
     });
     it("should return an error and null value", async () => {
@@ -88,9 +111,10 @@ describe("User.Controller", () => {
   describe("updateUser", () => {
     beforeEach(async () => {
       await db.collection("users").deleteMany({});
-      await db.collection("users").insertOne({ ...mockUser });
+      await db.collection("users").insert(dbData);
     });
     it("should update the existing user", async () => {
+      const testUser = dbData[0];
       const ret = await controller.updateUser({
         id: "12345",
         familyName: "test",
@@ -103,7 +127,7 @@ describe("User.Controller", () => {
           familyName: "test",
           givenName: "tester",
           email: "test@t.com",
-          created: new Date(mockUser.created)
+          created: new Date(testUser.created)
         }
       });
     });
@@ -129,6 +153,14 @@ describe("User.Controller", () => {
       expect(ret).toEqual({
         error: 'child "email" fails because ["email" must be a valid email]'
       });
+    });
+  });
+  describe("deleteUser", () => {
+    it("should find user and delete it", async () => {
+      const ret = await controller.deleteUser({
+        id: "12345"
+      });
+      expect(ret).toEqual({ success: true });
     });
   });
   afterAll(async () => {
