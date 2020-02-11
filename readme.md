@@ -46,3 +46,9 @@ to access swagger use `localhost/swagger` end point.
 [x] test coverage of user section of app.
 
 [x] validation inputs done with `Joi`.
+
+### Further work to enable flickr test usability
+
+flickr endpoint has been added as `localhost/flickr`. that the single page app will request so that the searc is performed by a server.
+
+This must be running at the same time as flickr app.
