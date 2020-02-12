@@ -22,21 +22,6 @@ class App {
       app.get("/", (req, res) => res.send("hello"));
 
       app.use("/swagger", SwaggerUi.serve, SwaggerUi.setup(SwaggerDoc));
-      app.get("/flickr", (req, res) => {
-        try {
-          const { search } = req.query;
-          const tag = search ? search : "kittens";
-          request(
-            `https://api.flickr.com/services/feeds/photos_public.gne?tags=${tag}&format=json&nojsoncallback=true`,
-            async (error, response, body) => {
-              res.send(response.body);
-            }
-          );
-        } catch (e) {
-          return res.status(500).send(e);
-        }
-      });
-
       this._instance = app;
     }
     return this._instance;
